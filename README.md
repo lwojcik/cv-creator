@@ -54,7 +54,8 @@ npm run validate   # check every data/*.json against schema/cv.schema.json
 
 A build target is either a name from `data/` (`frontend`) or a path to a JSON file (anything ending in `.json`
 or containing a slash). A file's PDF is named `<prefix><file name without .json>.pdf` in the output folder unless
-`--out` is given (single target only). Exit code is non-zero if a file is missing or invalid, or the CV exceeds
+`--out` is given (single target only). If the CV sets `meta.fileName`, the PDF is written to
+`<output dir>/<CV name>/<meta.fileName>.pdf` instead, which keeps the company out of the file name of a tailored CV. Exit code is non-zero if a file is missing or invalid, or the CV exceeds
 its page limit.
 
 Restart `npm run dev` after changing the config.

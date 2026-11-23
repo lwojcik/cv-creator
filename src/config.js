@@ -32,4 +32,5 @@ export const config = {
 const sanitize = (value) => value.replace(/[\\/:*?"<>|]+/g, '-')
 
 export const outputDir = isAbsolute(config.output.dir) ? config.output.dir : join(root, config.output.dir)
-export const outputFileName = (name) => `${sanitize(config.output.filenamePrefix)}${name}.pdf`
+export const outputFileName = (name, cv) =>
+  cv?.meta?.fileName ? `${sanitize(cv.meta.fileName)}.pdf` : `${sanitize(config.output.filenamePrefix)}${name}.pdf`

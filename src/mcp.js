@@ -99,7 +99,7 @@ server.registerTool(
     const cv = await readCv(cvName)
     const { valid, errors } = validate(cv)
     if (!valid) return failure('Schema validation failed', { errors })
-    const result = await buildPdf(cv, pdfPath(cvName))
+    const result = await buildPdf(cv, pdfPath(cvName, cv))
     return json({ file: result.path, layout: await layoutReport(cv, result) })
   })
 )

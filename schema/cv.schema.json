@@ -22,6 +22,11 @@
           "type": "integer",
           "minimum": 1,
           "description": "Layout check fails when the PDF has more pages. Default comes from cv.config.json (2)."
+        },
+        "fileName": {
+          "type": "string",
+          "pattern": "^[\\w.-]+$",
+          "description": "PDF file name without .pdf, e.g. jane-doe-cv. When set, the PDF is written to <output dir>/<CV name>/<fileName>.pdf, so a CV tailored for a company does not reveal the company in its file name."
         }
       }
     },

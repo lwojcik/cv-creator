@@ -79,7 +79,7 @@ const routes = [
   }],
   ['POST', /^\/api\/cvs\/([\w-]+)\/build$/, async (req, res, [name]) => {
     const cv = await readCv(name)
-    const result = await buildPdf(cv, pdfPath(name))
+    const result = await buildPdf(cv, pdfPath(name, cv))
     const { pdf } = result
     const report = await checkLayout(pdf, layoutOptions(cv, result))
     res.writeHead(200, { 'content-type': 'application/pdf', 'x-cv-report': encodeURIComponent(JSON.stringify(report)), 'cache-control': 'no-store' })
@@ -103,8 +103,9 @@ const routes = [
   ['POST', /^\/preview\/([\w-]+)$/, async (req, res) =>
     send(res, 200, renderHtml(parseCv(await readBody(req)), { inlineFonts: false }), 'text/html; charset=utf-8')],
   ['GET', /^\/pdf\/([\w-]+)$/, async (req, res, [name]) => {
-    const { pdf } = await renderPdf(await readCv(name))
-    res.writeHead(200, { 'content-type': 'application/pdf', 'content-disposition': `inline; filename="${outputFileName(name)}"` })
+    const cv = await readCv(name)
+    const { pdf } = await renderPdf(cv)
+    res.writeHead(200, { 'content-type': 'application/pdf', 'content-disposition': `inline; filename="${outputFileName(name, cv)}"` })
     res.end(pdf)
   }]
 ]

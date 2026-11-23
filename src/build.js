@@ -34,7 +34,7 @@ for (const target of targets) {
     exitCode = 1
     continue
   }
-  const result = await buildPdf(cv, values.out ?? pdfPath(name))
+  const result = await buildPdf(cv, values.out ?? pdfPath(name, cv))
   const report = await checkLayout(result.pdf, layoutOptions(cv, result))
   console.log(`built ${result.path}\n${formatReport(report)}`)
   if (report.pageCount > report.maxPages || (values.strict && !report.ok)) exitCode = 1

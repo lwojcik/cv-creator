@@ -38,7 +38,9 @@ export const cvPath = (name) => {
   return join(dataDir, `${name}.json`)
 }
 
-export const pdfPath = (name) => join(distDir, outputFileName(name))
+// A CV with meta.fileName gets its own subfolder, so tailored CVs sharing a file name do not overwrite each other.
+export const pdfPath = (name, cv) =>
+  cv?.meta?.fileName ? join(distDir, name, outputFileName(name, cv)) : join(distDir, outputFileName(name, cv))
 
 export const listCvs = async () => {
   const files = await readdir(dataDir).catch((error) => (error.code === 'ENOENT' ? [] : Promise.reject(error)))
