@@ -125,6 +125,11 @@ The server binds to `127.0.0.1` and has no authentication. Do not expose it publ
 
 The same can be done on disk: copy `data/general.json`, edit, run `npm run validate` and `npm run build -- <name>`.
 
+## Contributing
+
+Commit messages follow [Conventional Commits](https://www.conventionalcommits.org/), e.g. `feat: add Letter page size`
+or `fix(check): handle empty pages`. A `commit-msg` hook (husky + commitlint) rejects other messages after `npm install`.
+
 ## License
 
 [MIT](LICENSE)
