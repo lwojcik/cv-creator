@@ -125,6 +125,36 @@ The server binds to `127.0.0.1` and has no authentication. Do not expose it publ
 
 The same can be done on disk: copy `data/general.json`, edit, run `npm run validate` and `npm run build -- <name>`.
 
+## MCP server
+
+`src/mcp.js` exposes the same functionality to MCP clients (Claude Code, Claude Desktop, other agents) over stdio.
+It works on the files in `data/` directly, so the web server does not need to be running.
+
+Register it, using the absolute path to this repo:
+
+```sh
+claude mcp add cv-creator -- node /absolute/path/to/cv-creator/src/mcp.js
+```
+
+For other clients add the same command (`node /absolute/path/to/cv-creator/src/mcp.js`) to their MCP server config.
+
+| Tool | Description |
+| --- | --- |
+| `list_cvs` | CV names in `data/` and the default CV |
+| `get_schema` | JSON Schema of the CV format |
+| `get_cv` | Read a CV |
+| `validate_cv` | Validate a CV object without saving |
+| `save_cv` | Validate and save to `data/<name>.json`; refuses to replace an existing CV unless `overwrite: true` |
+| `build_pdf` | Render a saved CV to the output folder; returns the file path and the layout report |
+| `check_layout` | Layout report without writing a PDF |
+
+Resources: `cv://schema` and `cv://cvs/{name}` (every CV in `data/`).
+Prompt: `tailor_cv` (`job_offer`, optional `base_cv` and `new_name`) walks the agent through creating a tailored
+copy of a CV, rebuilding until the layout is clean, and reporting what changed. It tells the agent never to invent experience.
+
+Your CV contains personal data and MCP clients pass tool results to a model, so connect the server only to assistants
+you are comfortable sharing it with. The server only reads and writes inside `data/` and the output folder.
+
 ## Contributing
 
 Commit messages follow [Conventional Commits](https://www.conventionalcommits.org/), e.g. `feat: add Letter page size`
