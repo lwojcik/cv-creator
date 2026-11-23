@@ -124,3 +124,7 @@ The server binds to `127.0.0.1` and has no authentication. Do not expose it publ
 4. `POST /api/cvs/<company>-<role>/build` and check the page count (the base CV is 2 pages).
 
 The same can be done on disk: copy `data/general.json`, edit, run `npm run validate` and `npm run build -- <name>`.
+
+## License
+
+[MIT](LICENSE)

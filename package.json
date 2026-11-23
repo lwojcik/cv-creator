@@ -2,7 +2,7 @@
   "name": "cv-creator",
   "version": "1.0.0",
   "description": "Build a PDF CV from JSON data, with live preview and an API",
-  "license": "ISC",
+  "license": "MIT",
   "author": "",
   "type": "module",
   "scripts": {
