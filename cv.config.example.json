@@ -1,0 +1,14 @@
+{
+  "defaultCv": "general",
+  "output": {
+    "dir": "dist",
+    "filenamePrefix": "jane-doe-cv-"
+  },
+  "layout": {
+    "maxPages": 2
+  },
+  "server": {
+    "host": "127.0.0.1",
+    "port": 3000
+  }
+}

@@ -1,0 +1,106 @@
+* { box-sizing: border-box; }
+
+html {
+  background: var(--paper);
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-family);
+  font-size: var(--font-size);
+  line-height: var(--line-height);
+  color: var(--text);
+}
+
+header { margin-bottom: var(--header-bottom); }
+
+h1 {
+  margin: 0;
+  font-size: var(--name-size);
+  line-height: 1.25;
+  font-weight: 700;
+  color: var(--accent);
+  text-transform: uppercase;
+}
+
+.headline {
+  margin: 1mm 0 2mm;
+  font-size: var(--headline-size);
+  font-weight: 700;
+  color: var(--accent);
+  text-transform: uppercase;
+}
+
+.contact { margin: 0 0 0.8mm; font-size: var(--contact-size); font-weight: 300; line-height: 1.35; }
+
+a { color: inherit; text-decoration: underline; }
+
+section { margin-bottom: var(--section-gap); }
+section.break-before { break-before: page; }
+
+h2 {
+  margin: 0 0 var(--section-title-gap);
+  padding-bottom: var(--section-title-padding);
+  font-size: var(--section-title-size);
+  font-weight: 700;
+  color: var(--accent);
+  text-transform: uppercase;
+  border-bottom: var(--rule-thickness) solid var(--rule);
+  break-after: avoid;
+}
+
+h3 { margin: 0; font-size: var(--entry-title-size); font-weight: 600; break-after: avoid; }
+
+p { margin: 0; }
+.subtitle { margin-bottom: 0.5mm; }
+
+.entry { margin-bottom: var(--entry-gap); break-inside: avoid; }
+.entry:last-child { margin-bottom: 0; }
+
+ul { margin: 0; padding-left: var(--bullet-indent); }
+li { margin: 0; padding-left: 0.3mm; }
+ul.nested { list-style: circle; padding-left: 6mm; }
+
+footer {
+  margin-top: var(--footer-gap);
+  font-style: italic;
+  max-width: var(--footer-max-width);
+}
+
+strong { font-weight: 600; }
+
+@media screen {
+  html { background: #8a8f98; }
+  body {
+    width: var(--page-width);
+    min-height: 297mm;
+    position: relative;
+    margin: 12px auto;
+    padding: var(--page-first-top) var(--page-side) var(--page-bottom);
+    background: var(--paper);
+    box-shadow: 0 2px 12px rgb(0 0 0 / 35%);
+  }
+
+  .page-break {
+    position: absolute;
+    left: 0;
+    width: var(--page-width);
+    height: 0;
+    border-top: 2px dashed #d64545;
+    pointer-events: none;
+  }
+
+  .page-break::after {
+    content: attr(data-label);
+    position: absolute;
+    right: 4mm;
+    top: 2px;
+    padding: 1px 6px;
+    font: 600 9pt system-ui, sans-serif;
+    color: #fff;
+    background: #d64545;
+    border-radius: 3px;
+  }
+}

@@ -1,0 +1,139 @@
+{
+  "meta": {
+    "title": "John Doe - CV",
+    "lang": "en",
+    "maxPages": 2
+  },
+  "header": {
+    "name": "John Doe",
+    "headline": "Platform Engineer",
+    "lines": [
+      "Riverton | phone: +00 111 222 333 | email: john.doe@example.org",
+      "www: https://example.org/john-doe",
+      "github: https://github.com/example-john-doe"
+    ]
+  },
+  "sections": [
+    {
+      "title": "Profile",
+      "type": "text",
+      "paragraphs": [
+        "Platform Engineer with 9 years of experience designing reliable backend services and cloud infrastructure. Works mostly with Go, Python and Kubernetes. Comfortable owning systems end to end, from architecture and delivery to on-call and cost optimisation. Enjoys writing documentation and mentoring teammates."
+      ]
+    },
+    {
+      "title": "Experience",
+      "type": "entries",
+      "entries": [
+        {
+          "heading": "Northwind Systems",
+          "role": "Senior Platform Engineer",
+          "period": "January 2022 - Present",
+          "bullets": [
+            "Designed and operated a Kubernetes-based internal platform serving around 60 engineering teams",
+            "Cut monthly cloud spend by 25% through autoscaling, right-sizing and clean-up of unused resources",
+            "Introduced service level objectives and an incident review process that reduced repeat incidents",
+            "Mentored two engineers moving from application development into infrastructure roles"
+          ]
+        },
+        {
+          "heading": "Contoso Cloud",
+          "role": "Backend Engineer",
+          "period": "April 2018 - December 2021",
+          "bullets": [
+            "Built REST and gRPC services in Go for a multi-tenant billing product",
+            "Automated deployments with Terraform and a CI/CD pipeline, shortening release time from days to hours",
+            "Participated in an on-call rotation and wrote runbooks for the most common alerts",
+            "Worked with product and support teams to prioritise reliability improvements alongside new features"
+          ]
+        },
+        {
+          "heading": "Fabrikam Data",
+          "role": "Junior Software Engineer",
+          "period": "July 2016 - March 2018",
+          "bullets": [
+            "Developed data import tools in Python for a reporting product",
+            "Improved test coverage of the import pipeline from 35% to 80%",
+            "Paired with senior engineers during code reviews and learned the team's release process"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Technical Skills",
+      "type": "skills",
+      "groups": [
+        {
+          "label": "Languages",
+          "items": "Go, Python, Bash, SQL"
+        },
+        {
+          "label": "Infrastructure",
+          "items": "Kubernetes, Terraform, Docker, AWS"
+        },
+        {
+          "label": "Observability",
+          "items": "Prometheus, Grafana, OpenTelemetry"
+        },
+        {
+          "label": "Practices",
+          "items": "CI/CD, incident management, technical writing"
+        }
+      ]
+    },
+    {
+      "title": "Projects and Talks",
+      "type": "entries",
+      "entries": [
+        {
+          "heading": "Open-source deployment checker",
+          "period": "2020 - Present",
+          "bullets": [
+            "Command-line tool that validates Kubernetes manifests against team-defined policies before deployment",
+            "Adopted by a few hundred teams according to public download statistics",
+            "Source code: https://github.com/example-john-doe/deploy-checker"
+          ]
+        },
+        {
+          "heading": "Conference talks and articles",
+          "period": "2019 - 2024",
+          "bullets": [
+            "Spoke at regional meetups about reliability engineering and published a series of articles on incident reviews",
+            {
+              "text": "Links:",
+              "children": [
+                "https://example.org/talks/blameless-reviews",
+                "https://example.org/articles/slo-basics"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Education",
+      "type": "entries",
+      "entries": [
+        {
+          "heading": "Riverton Institute of Technology",
+          "lines": [
+            "Bachelor’s degree in Information Systems, graduated in 2016"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Interests",
+      "type": "entries",
+      "entries": [
+        {
+          "heading": "Cycling and ceramics",
+          "lines": [
+            "Long-distance bike touring in the summer and hand-built pottery in a community studio"
+          ]
+        }
+      ]
+    }
+  ],
+  "footer": "Consent to the processing of personal data for recruitment purposes is given by the candidate."
+}

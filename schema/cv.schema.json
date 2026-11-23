@@ -1,0 +1,221 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "CV",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "header",
+    "sections"
+  ],
+  "properties": {
+    "meta": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "lang": {
+          "type": "string"
+        },
+        "maxPages": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Layout check fails when the PDF has more pages. Default comes from cv.config.json (2)."
+        }
+      }
+    },
+    "header": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "headline": {
+          "type": "string"
+        },
+        "lines": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Contact lines. URLs and e-mail addresses are linked automatically."
+        }
+      }
+    },
+    "sections": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "$ref": "#/definitions/textSection"
+          },
+          {
+            "$ref": "#/definitions/entriesSection"
+          },
+          {
+            "$ref": "#/definitions/skillsSection"
+          }
+        ]
+      }
+    },
+    "footer": {
+      "type": "string"
+    }
+  },
+  "definitions": {
+    "textSection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "title",
+        "type",
+        "paragraphs"
+      ],
+      "properties": {
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "pageBreakBefore": {
+          "type": "boolean"
+        },
+        "type": {
+          "const": "text"
+        },
+        "paragraphs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "skillsSection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "title",
+        "type",
+        "groups"
+      ],
+      "properties": {
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "pageBreakBefore": {
+          "type": "boolean"
+        },
+        "type": {
+          "const": "skills"
+        },
+        "groups": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "label",
+              "items"
+            ],
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "entriesSection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "title",
+        "type",
+        "entries"
+      ],
+      "properties": {
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "pageBreakBefore": {
+          "type": "boolean"
+        },
+        "type": {
+          "const": "entries"
+        },
+        "entries": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/entry"
+          }
+        }
+      }
+    },
+    "entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "heading"
+      ],
+      "properties": {
+        "heading": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string"
+        },
+        "period": {
+          "type": "string"
+        },
+        "lines": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "bullets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/bullet"
+          }
+        }
+      }
+    },
+    "bullet": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "text"
+          ],
+          "properties": {
+            "text": {
+              "type": "string"
+            },
+            "children": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

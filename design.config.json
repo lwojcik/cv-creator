@@ -1,0 +1,36 @@
+{
+  "colors": {
+    "accent": "#1f4e79",
+    "rule": "#8eadcf",
+    "text": "#262626",
+    "paper": "#fafafa"
+  },
+  "font": {
+    "family": "'DM Sans', sans-serif",
+    "size": "10.2pt",
+    "lineHeight": 1.34,
+    "nameSize": "20pt",
+    "headlineSize": "14.2pt",
+    "contactSize": "12.5pt",
+    "sectionTitleSize": "12.2pt",
+    "entryTitleSize": "10.2pt"
+  },
+  "page": {
+    "size": "A4",
+    "marginSide": "21mm",
+    "marginTop": "21mm",
+    "marginFirstPageTop": "13mm",
+    "marginBottom": "13mm"
+  },
+  "spacing": {
+    "headerBottom": "8mm",
+    "sectionGap": "6mm",
+    "sectionTitleGap": "4mm",
+    "sectionTitlePadding": "2.2mm",
+    "entryGap": "3.6mm",
+    "bulletIndent": "6.2mm",
+    "footerGap": "5mm",
+    "footerMaxWidth": "135mm",
+    "ruleThickness": "1.5px"
+  }
+}

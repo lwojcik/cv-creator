@@ -1,0 +1,530 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>CV Creator</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root { --bg: #f4f5f7; --panel: #fff; --line: #d9dde3; --text: #1d2430; --accent: #1f4e79; --bad: #b3261e; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #14171c; --panel: #1c2027; --line: #2d333d; --text: #e6e9ee; --accent: #7fb0e0; --bad: #ff8a80; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; height: 100vh; display: flex; flex-direction: column; background: var(--bg); color: var(--text); font: 14px system-ui, sans-serif; }
+  .bar { display: flex; gap: 8px; align-items: center; padding: 8px 12px; background: var(--panel); border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+  .bar strong { margin-right: 8px; color: var(--accent); }
+  #cv-select { font-weight: 600; min-width: 140px; }
+  select, button, input { font: inherit; padding: 5px 10px; border: 1px solid var(--line); border-radius: 6px; background: var(--panel); color: var(--text); cursor: pointer; }
+  button.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .status { margin-left: auto; font-size: 13px; }
+  .status.bad { color: var(--bad); }
+  .report { padding: 6px 12px; font-size: 13px; background: var(--panel); border-bottom: 1px solid var(--line); }
+  .report.warn { background: #fff4d6; color: #5c4400; }
+  .report.warn ul { margin: 4px 0 0; padding-left: 18px; }
+  @media (prefers-color-scheme: dark) { .report.warn { background: #3a3012; color: #ffd98a; } }
+  main { flex: 1; display: grid; grid-template-columns: minmax(280px, 1fr) minmax(0, 1.3fr); min-height: 0; }
+  textarea { width: 100%; height: 100%; resize: none; border: 0; border-right: 1px solid var(--line); padding: 12px; background: var(--panel); color: var(--text); font: 12.5px/1.5 ui-monospace, Menlo, monospace; outline: none; tab-size: 2; }
+  .left { display: flex; flex-direction: column; min-height: 0; border-right: 1px solid var(--line); background: var(--panel); }
+  .left textarea { flex: 1; border-right: 0; }
+  .left textarea[hidden] { display: none; }
+  .modes { display: flex; gap: 4px; padding: 6px 12px; border-bottom: 1px solid var(--line); }
+  .modes button.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .form { flex: 1; overflow-y: auto; padding: 12px; }
+  .form[hidden] { display: none; }
+  .form h4 { margin: 16px 0 6px; font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--accent); }
+  .form label.field { display: block; margin: 0 0 8px; }
+  .form label.field > span { display: block; font-size: 12px; opacity: .7; margin-bottom: 2px; }
+  .form input[type=text], .form textarea { width: 100%; padding: 6px 8px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: var(--text); font: inherit; resize: none; overflow: hidden; height: auto; }
+  .form input:focus, .form textarea:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
+  .row { display: flex; gap: 4px; align-items: flex-start; margin-bottom: 4px; }
+  .row > :first-child { flex: 1; min-width: 0; }
+  .row.pair > input { flex: 1; min-width: 0; }
+  .row.pair > input:first-child { flex: 0 0 34%; }
+  .icon { padding: 3px 7px; line-height: 1.2; flex: none; }
+  .icon.danger:hover { color: var(--bad); border-color: var(--bad); }
+  .small { font-size: 12px; padding: 3px 8px; }
+  .card { border: 1px solid var(--line); border-radius: 8px; margin-bottom: 8px; background: var(--panel); }
+  .card > summary { display: flex; gap: 4px; align-items: center; padding: 8px 10px; cursor: pointer; list-style: none; user-select: none; }
+  .card > summary::-webkit-details-marker { display: none; }
+  .card > summary::before { content: '▸'; opacity: .6; width: 12px; }
+  .card[open] > summary::before { content: '▾'; }
+  .card > summary .title { flex: 1; min-width: 0; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .card > summary .badge { font-size: 11px; opacity: .6; margin-right: 6px; }
+  .card > .body { padding: 4px 10px 10px; border-top: 1px solid var(--line); padding-top: 10px; }
+  .card.entry { background: var(--bg); margin-bottom: 6px; }
+  .card.entry > summary .title { font-weight: 500; }
+  .nested-list { margin: 0 0 6px 18px; padding-left: 8px; border-left: 2px solid var(--line); }
+  .check { display: flex; gap: 6px; align-items: center; margin: 6px 0; font-size: 13px; }
+  .adder { display: flex; gap: 6px; margin-top: 10px; align-items: center; }
+  .pane { position: relative; min-height: 0; }
+  .pane iframe { width: 100%; height: 100%; border: 0; background: #888; display: block; }
+  .pane iframe[hidden] { display: none; }
+  .views { position: absolute; top: 8px; right: 24px; z-index: 1; display: flex; gap: 4px; }
+  .views button { opacity: .9; font-size: 12px; padding: 3px 8px; }
+  .views button.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+  @media (max-width: 800px) { main { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr; } }
+</style>
+</head>
+<body>
+<div class="bar">
+  <strong>CV Creator</strong>
+  <select id="cv-select" aria-label="CV version"></select>
+  <button id="new">Duplicate as…</button>
+  <button id="save" class="primary">Save</button>
+  <input id="filename" aria-label="PDF file name" placeholder="PDF file name" size="26">
+  <button id="pdf">Build &amp; download PDF</button>
+  <span id="status" class="status"></span>
+</div>
+<div id="report" class="report"></div>
+<main>
+  <div class="left">
+    <div class="modes">
+      <button id="mode-form" class="active">Form</button>
+      <button id="mode-json">JSON</button>
+    </div>
+    <div id="form" class="form"></div>
+    <textarea id="editor" spellcheck="false" aria-label="CV JSON" hidden></textarea>
+  </div>
+  <div class="pane">
+    <div class="views" role="tablist">
+      <button id="view-html" class="active">Fast preview</button>
+      <button id="view-pdf">Exact PDF</button>
+    </div>
+    <iframe id="preview" title="Fast preview"></iframe>
+    <iframe id="pdfview" title="PDF preview" hidden></iframe>
+  </div>
+</main>
+<script>
+  const $ = (id) => document.getElementById(id)
+  const editor = $('editor')
+  const status = (text, bad = false) => { $('status').textContent = text; $('status').className = `status${bad ? ' bad' : ''}` }
+  let appConfig = { defaultCv: 'general', filenamePrefix: '' }
+  let name = new URLSearchParams(location.search).get('cv') || localStorage.getItem('last-cv') || ''
+  let dirty = false
+  let timer
+  const fileKey = () => `pdf-filename:${name}`
+  const loadFilename = () => {
+    let saved = null
+    try { saved = localStorage.getItem(fileKey()) } catch {}
+    $('filename').value = saved || `${appConfig.filenamePrefix}${name}`
+  }
+  const pdfFilename = () => {
+    const base = $('filename').value.trim().replace(/\.pdf$/i, '').replace(/[\\/:*?"<>|]+/g, '-')
+    return `${base || `${appConfig.filenamePrefix}${name}`}.pdf`
+  }
+
+  const api = async (path, options) => {
+    const res = await fetch(path, options)
+    if (!res.ok) throw new Error((await res.json().catch(() => ({}))).error || res.statusText)
+    return res
+  }
+
+  let renderSeq = 0
+  let pdfUrl
+  const showReport = (report) => {
+    const box = $('report')
+    const fill = report.pages.map((p) => `p${p.page}: ${p.blankAtBottomMm} mm free`).join(' · ')
+    box.className = `report${report.ok ? '' : ' warn'}`
+    box.innerHTML = `<b>${report.pageCount} page${report.pageCount === 1 ? '' : 's'}</b> (limit ${report.maxPages}) · ${fill}`
+    footerGap = report.footerGapMm
+    pageStarts = report.pages.slice(1).map((page) => page.firstLine)
+    applyBreaks()
+    if (!report.ok) {
+      const list = document.createElement('ul')
+      for (const warning of report.warnings) list.append(Object.assign(document.createElement('li'), { textContent: warning }))
+      box.append(list)
+    }
+  }
+  const renderPreview = async () => {
+    const seq = ++renderSeq
+    let cv
+    try { cv = JSON.parse(editor.value) } catch (error) { return status(`JSON: ${error.message}`, true) }
+    $('report').textContent = 'Rendering…'
+    const res = await fetch('/api/render', { method: 'POST', body: JSON.stringify(cv) })
+    if (seq !== renderSeq) return
+    if (!res.ok) {
+      $('report').className = 'report warn'
+      $('report').textContent = (await res.json()).error
+      return
+    }
+    const blob = await res.blob()
+    if (seq !== renderSeq) return
+    showReport(JSON.parse(decodeURIComponent(res.headers.get('x-cv-report'))))
+    if (pdfUrl) URL.revokeObjectURL(pdfUrl)
+    pdfUrl = URL.createObjectURL(blob)
+    $('pdfview').src = `${pdfUrl}#toolbar=0&navpanes=0&view=FitH`
+  }
+  const refreshPdf = () => renderPreview().catch((e) => status(e.message, true))
+
+  const fit = () => {
+    const frame = $('preview')
+    const root = frame.contentDocument?.documentElement
+    if (root) root.style.zoom = Math.min(1.25, frame.clientWidth / 835)
+  }
+  $('preview').addEventListener('load', () => { fit(); applyBreaks() })
+  window.addEventListener('resize', fit)
+  let pageStarts = []
+  let footerGap
+  const applyFooterGap = () => {
+    const root = $('preview').contentDocument?.documentElement
+    if (root && footerGap !== undefined) root.style.setProperty('--footer-gap', `${footerGap}mm`)
+  }
+  const normalize = (text) => text.toLowerCase().replace(/^[^\p{L}\p{N}]+/u, '').replace(/\s+/g, '')
+  const offsetTop = (el) => {
+    let y = 0
+    for (let node = el; node && node.tagName !== 'BODY'; node = node.offsetParent) y += node.offsetTop
+    return y
+  }
+  const applyBreaks = () => {
+    const doc = $('preview').contentDocument
+    if (!doc?.body) return
+    applyFooterGap()
+    doc.querySelectorAll('.page-break').forEach((node) => node.remove())
+    const candidates = [...doc.querySelectorAll('h2, h3, p, li')]
+    const mmToPx = 96 / 25.4
+    pageStarts.forEach((firstLine, index) => {
+      const wanted = normalize(firstLine)
+      const minTop = (index + 1) * 200 * mmToPx
+      const target = candidates.find((el) => offsetTop(el) >= minTop && normalize(el.textContent).startsWith(wanted))
+      if (!target) return
+      const marker = doc.createElement('div')
+      marker.className = 'page-break'
+      marker.dataset.label = `page ${index + 2}`
+      marker.style.top = `${offsetTop(target) - 16}px`
+      doc.body.append(marker)
+    })
+  }
+  let htmlSeq = 0
+  let htmlReady = false
+  const renderHtml = async () => {
+    const seq = ++htmlSeq
+    let text
+    try { JSON.parse(editor.value); text = editor.value } catch { return }
+    const res = await fetch(`/preview/${name}`, { method: 'POST', body: text })
+    if (seq !== htmlSeq) return
+    if (!res.ok) return status((await res.json()).error, true)
+    const html = await res.text()
+    const frame = $('preview')
+    if (!htmlReady) {
+      frame.srcdoc = html
+      htmlReady = true
+      return
+    }
+    const next = new DOMParser().parseFromString(html, 'text/html')
+    const doc = frame.contentDocument
+    if (!doc?.body) { frame.srcdoc = html; return }
+    const y = frame.contentWindow.scrollY
+    doc.title = next.title
+    doc.body.replaceChildren(...next.body.childNodes)
+    fit()
+    applyBreaks()
+    frame.contentWindow.scrollTo(0, y)
+  }
+  const refreshPreview = () => {
+    renderHtml().catch((e) => status(e.message, true))
+    clearTimeout(pdfTimer)
+    pdfTimer = setTimeout(refreshPdf, 1000)
+  }
+  let pdfTimer
+  const setView = (view) => {
+    $('preview').hidden = view !== 'html'
+    $('pdfview').hidden = view !== 'pdf'
+    $('view-html').className = view === 'html' ? 'active' : ''
+    $('view-pdf').className = view === 'pdf' ? 'active' : ''
+  }
+  $('view-html').onclick = () => setView('html')
+  $('view-pdf').onclick = () => setView('pdf')
+
+  const loadList = async () => {
+    const names = await (await api('/api/cvs')).json()
+    if (!names.includes(name)) name = names[0]
+    const select = $('cv-select')
+    select.replaceChildren(...names.map((n) => Object.assign(document.createElement('option'), { value: n, textContent: n, selected: n === name })))
+    select.value = name
+  }
+
+  $('cv-select').onchange = (event) => switchTo(event.target.value)
+
+  const switchTo = async (next) => {
+    if (next === name) return
+    if (dirty && !confirm('Discard unsaved changes?')) { $('cv-select').value = name; return }
+    name = next
+    await loadList()
+    await load()
+  }
+
+  const load = async () => {
+    editor.value = JSON.stringify(await (await api(`/api/cvs/${name}`)).json(), null, 2)
+    viewState.clear()
+    syncForm()
+    dirty = false
+    history.replaceState(null, '', `?cv=${name}`)
+    try { localStorage.setItem('last-cv', name) } catch {}
+    loadFilename()
+    refreshPreview()
+    status('Loaded')
+  }
+
+  const livePreview = async () => {
+    try { JSON.parse(editor.value) } catch (error) { return status(`JSON: ${error.message}`, true) }
+    dirty = true
+    status('Unsaved changes')
+    refreshPreview()
+  }
+
+  const save = async () => {
+    await api(`/api/cvs/${name}`, { method: 'PUT', body: editor.value })
+    dirty = false
+    status('Saved')
+  }
+
+  editor.addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(livePreview, 120) })
+  $('save').onclick = () => save().catch((e) => status(e.message, true))
+  $('pdf').onclick = async () => {
+    try {
+      await save()
+      status('Building PDF…')
+      const res = await api(`/api/cvs/${name}/build`, { method: 'POST' })
+      const url = URL.createObjectURL(await res.blob())
+      Object.assign(document.createElement('a'), { href: url, download: pdfFilename() }).click()
+      try { localStorage.setItem(fileKey(), $('filename').value) } catch {}
+      status(`Downloaded ${pdfFilename()} (also written to the output folder)`)
+    } catch (e) { status(e.message, true) }
+  }
+  $('new').onclick = async () => {
+    const next = prompt('New CV name (letters, digits, - and _):')
+    if (!next) return
+    try {
+      await api(`/api/cvs/${next}`, { method: 'PUT', body: editor.value })
+      name = next
+      dirty = false
+      await loadList()
+      await load()
+      status(`Created ${next}`)
+    } catch (e) { status(e.message, true) }
+  }
+  new EventSource('/events').onmessage = (event) => {
+    if (event.data === '@design') { htmlReady = false; refreshPreview(); return }
+    if (event.data === name && !document.activeElement?.closest('.left') && !dirty) load()
+    loadList()
+  }
+
+  let model = null
+  let mode = 'form'
+  const viewState = new Map()
+  const form = $('form')
+
+  const h = (tag, props = {}, ...children) => {
+    const node = document.createElement(tag)
+    const { class: className, ...rest } = props
+    if (className) node.className = className
+    Object.assign(node, rest)
+    node.append(...children.filter((child) => child !== null && child !== undefined))
+    return node
+  }
+
+  const autosize = (node) => { node.style.height = 'auto'; node.style.height = `${node.scrollHeight + 2}px` }
+
+  const commit = (structural = false) => {
+    editor.value = JSON.stringify(model, null, 2)
+    editor.dispatchEvent(new Event('input'))
+    if (structural) renderForm()
+  }
+
+  const button = (text, onclick, className = 'icon', title = '') => {
+    const node = h('button', { type: 'button', className, textContent: text, title })
+    node.onclick = (event) => { event.preventDefault(); event.stopPropagation(); onclick() }
+    return node
+  }
+
+  const move = (array, index, delta) => {
+    const target = index + delta
+    if (target < 0 || target >= array.length) return
+    ;[array[index], array[target]] = [array[target], array[index]]
+    commit(true)
+  }
+
+  const controls = (array, index) => [
+    button('↑', () => move(array, index, -1), 'icon', 'Move up'),
+    button('↓', () => move(array, index, 1), 'icon', 'Move down'),
+    button('✕', () => { array.splice(index, 1); commit(true) }, 'icon danger', 'Remove')
+  ]
+
+  const field = (label, value, set, { multiline = false } = {}) => {
+    const input = multiline
+      ? h('textarea', { value, rows: 1 })
+      : h('input', { type: 'text', value })
+    input.oninput = () => { set(input.value); if (multiline) autosize(input); commit() }
+    return h('label', { class: 'field' }, h('span', { textContent: label }), input)
+  }
+
+  const optionalField = (label, object, key) =>
+    field(label, object[key] ?? '', (value) => { if (value) object[key] = value; else delete object[key] })
+
+  const stringList = (array, { multiline = true, addLabel = '+ Add' } = {}) => {
+    const wrap = h('div')
+    array.forEach((value, index) => {
+      const input = multiline ? h('textarea', { value, rows: 1 }) : h('input', { type: 'text', value })
+      input.oninput = () => { array[index] = input.value; if (multiline) autosize(input); commit() }
+      wrap.append(h('div', { class: 'row' }, input, ...controls(array, index)))
+    })
+    wrap.append(button(addLabel, () => { array.push(''); commit(true) }, 'small'))
+    return wrap
+  }
+
+  const bulletList = (bullets) => {
+    const wrap = h('div')
+    bullets.forEach((bullet, index) => {
+      const isObject = typeof bullet === 'object'
+      const text = isObject ? bullet.text : bullet
+      const input = h('textarea', { value: text, rows: 1 })
+      input.oninput = () => {
+        if (isObject) bullet.text = input.value; else bullets[index] = input.value
+        autosize(input)
+        commit()
+      }
+      const toggle = isObject
+        ? button('⇤', () => { bullets[index] = bullet.text; commit(true) }, 'icon', 'Remove sub-list')
+        : button('⇥', () => { bullets[index] = { text: bullet, children: [''] }; commit(true) }, 'icon', 'Add sub-list')
+      wrap.append(h('div', { class: 'row' }, input, toggle, ...controls(bullets, index)))
+      if (isObject) {
+        bullet.children ??= []
+        wrap.append(h('div', { class: 'nested-list' }, stringList(bullet.children, { multiline: false, addLabel: '+ Add sub-item' })))
+      }
+    })
+    wrap.append(button('+ Add bullet', () => { bullets.push(''); commit(true) }, 'small'))
+    return wrap
+  }
+
+  const card = (path, defaultOpen, summaryParts, body, className = '') => {
+    const open = viewState.get(path) ?? defaultOpen
+    const node = h('details', { class: `card ${className}`, open })
+    node.addEventListener('toggle', () => viewState.set(path, node.open))
+    node.append(h('summary', {}, ...summaryParts), h('div', { class: 'body' }, ...body))
+    return node
+  }
+
+  const entryCard = (entries, index, path) => {
+    const entry = entries[index]
+    entry.bullets ??= []
+    entry.lines ??= []
+    const summary = [
+      h('span', { class: 'title', textContent: [entry.heading, entry.role].filter(Boolean).join(' · ') || '(untitled)' }),
+      ...controls(entries, index)
+    ]
+    return card(path, false, summary, [
+      field('Heading', entry.heading ?? '', (value) => { entry.heading = value }),
+      optionalField('Role', entry, 'role'),
+      optionalField('Period', entry, 'period'),
+      h('h4', { textContent: 'Text lines' }),
+      stringList(entry.lines, { addLabel: '+ Add line' }),
+      h('h4', { textContent: 'Bullets' }),
+      bulletList(entry.bullets)
+    ], 'entry')
+  }
+
+  const sectionBody = (section, path) => {
+    if (section.type === 'text') {
+      return [h('h4', { textContent: 'Paragraphs' }), stringList(section.paragraphs, { addLabel: '+ Add paragraph' })]
+    }
+    if (section.type === 'skills') {
+      const wrap = h('div')
+      section.groups.forEach((group, index) => {
+        const label = h('input', { type: 'text', value: group.label, placeholder: 'Label' })
+        const items = h('input', { type: 'text', value: group.items, placeholder: 'Comma-separated items' })
+        label.oninput = () => { group.label = label.value; commit() }
+        items.oninput = () => { group.items = items.value; commit() }
+        wrap.append(h('div', { class: 'row pair' }, label, items, ...controls(section.groups, index)))
+      })
+      wrap.append(button('+ Add group', () => { section.groups.push({ label: '', items: '' }); commit(true) }, 'small'))
+      return [h('h4', { textContent: 'Skill groups' }), wrap]
+    }
+    const wrap = h('div')
+    section.entries.forEach((_, index) => wrap.append(entryCard(section.entries, index, `${path}.e${index}`)))
+    wrap.append(button('+ Add entry', () => {
+      section.entries.push({ heading: 'New entry', bullets: [''] })
+      viewState.set(`${path}.e${section.entries.length - 1}`, true)
+      commit(true)
+    }, 'small'))
+    return [h('h4', { textContent: 'Entries' }), wrap]
+  }
+
+  const sectionCard = (index) => {
+    const section = model.sections[index]
+    const path = `s${index}`
+    const summary = [
+      h('span', { class: 'badge', textContent: section.type }),
+      h('span', { class: 'title', textContent: section.title || '(untitled)' }),
+      ...controls(model.sections, index)
+    ]
+    const pageBreak = h('input', { type: 'checkbox', checked: Boolean(section.pageBreakBefore) })
+    pageBreak.onchange = () => { if (pageBreak.checked) section.pageBreakBefore = true; else delete section.pageBreakBefore; commit() }
+    return card(path, true, summary, [
+      field('Section title', section.title, (value) => { section.title = value }),
+      h('label', { class: 'check' }, pageBreak, 'Start on a new page'),
+      ...sectionBody(section, path)
+    ])
+  }
+
+  const sectionTemplates = {
+    text: () => ({ title: 'New section', type: 'text', paragraphs: [''] }),
+    entries: () => ({ title: 'New section', type: 'entries', entries: [{ heading: 'New entry', bullets: [''] }] }),
+    skills: () => ({ title: 'New section', type: 'skills', groups: [{ label: '', items: '' }] })
+  }
+
+  function renderForm() {
+    if (!model) return
+    const scroll = form.scrollTop
+    model.header.lines ??= []
+    const typeSelect = h('select', {}, ...Object.keys(sectionTemplates).map((type) => h('option', { value: type, textContent: type })))
+    form.replaceChildren(
+      h('h4', { textContent: 'Header' }),
+      field('Name', model.header.name ?? '', (value) => { model.header.name = value }),
+      optionalField('Headline', model.header, 'headline'),
+      h('label', { class: 'field' }, h('span', { textContent: 'Contact lines (links are detected automatically)' })),
+      stringList(model.header.lines, { multiline: false, addLabel: '+ Add line' }),
+      h('h4', { textContent: 'Sections' }),
+      ...model.sections.map((_, index) => sectionCard(index)),
+      h('div', { class: 'adder' }, typeSelect, button('+ Add section', () => {
+        model.sections.push(sectionTemplates[typeSelect.value]())
+        viewState.set(`s${model.sections.length - 1}`, true)
+        commit(true)
+      }, 'small')),
+      h('h4', { textContent: 'Footer' }),
+      field('Footer note', model.footer ?? '', (value) => { if (value) model.footer = value; else delete model.footer }, { multiline: true }),
+      h('h4', { textContent: 'Document' }),
+      field('Page title', model.meta?.title ?? '', (value) => { model.meta = { ...model.meta, title: value } }),
+      field('Max pages (layout warning limit)', String(model.meta?.maxPages ?? 2), (value) => {
+        const pages = Number.parseInt(value, 10)
+        model.meta = { ...model.meta }
+        if (pages > 0) model.meta.maxPages = pages; else delete model.meta.maxPages
+      })
+    )
+    form.querySelectorAll('textarea').forEach(autosize)
+    form.scrollTop = scroll
+  }
+
+  const syncForm = () => {
+    if (mode !== 'form') return
+    try { model = JSON.parse(editor.value) } catch (error) { setMode('json'); return status(`JSON: ${error.message}`, true) }
+    renderForm()
+  }
+
+  function setMode(next) {
+    mode = next
+    if (next === 'form') {
+      try { model = JSON.parse(editor.value) } catch (error) { mode = 'json'; return status(`Fix the JSON first: ${error.message}`, true) }
+      renderForm()
+    }
+    form.hidden = mode !== 'form'
+    editor.hidden = mode !== 'json'
+    $('mode-form').className = mode === 'form' ? 'active' : ''
+    $('mode-json').className = mode === 'json' ? 'active' : ''
+  }
+  $('mode-form').onclick = () => setMode('form')
+  $('mode-json').onclick = () => setMode('json')
+
+  api('/api/config').then((res) => res.json()).then((loaded) => { appConfig = loaded; name ||= loaded.defaultCv }).then(loadList).then(load).catch((e) => status(e.message, true))
+</script>
+</body>
+</html>
