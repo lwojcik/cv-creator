@@ -1,0 +1,7 @@
+{
+  "description": "Traditional: Georgia serif, centred header, small-caps section titles.",
+  "variant": "serif",
+  "colors": { "accent": "#3b2f2f", "rule": "#b9a99a", "text": "#222222", "paper": "#ffffff" },
+  "font": { "family": "Georgia, 'Times New Roman', serif", "size": "10.5pt", "nameSize": "22pt", "headlineSize": "12.5pt", "contactSize": "11pt", "sectionTitleSize": "11.5pt", "entryTitleSize": "10.5pt" },
+  "spacing": { "ruleThickness": "0.8px" }
+}

@@ -1,0 +1,7 @@
+{
+  "description": "Monochrome, quiet: sentence-case section titles and a hairline rule.",
+  "variant": "minimal",
+  "colors": { "accent": "#111111", "rule": "#bbbbbb", "text": "#2b2b2b", "paper": "#ffffff" },
+  "font": { "nameSize": "22pt", "headlineSize": "12pt", "sectionTitleSize": "11.5pt" },
+  "spacing": { "ruleThickness": "0.5px" }
+}

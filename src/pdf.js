@@ -40,15 +40,16 @@ const SAFETY_MM = 1.5
 export const renderPdf = async (cv) => {
   const first = await printPdf(cv)
   if (!cv.footer?.trim()) return { pdf: first }
-  const freeMm = (await analyzePdf(first)).at(-1).blankAtBottomMm
-  const footerGapMm = Math.round((pageGeometry(loadDesign()).footerGapMm + Math.max(0, freeMm - SAFETY_MM)) * 10) / 10
+  const freeMm = (await analyzePdf(first, cv.meta?.design)).at(-1).blankAtBottomMm
+  const footerGapMm = Math.round((pageGeometry(loadDesign(cv.meta?.design)).footerGapMm + Math.max(0, freeMm - SAFETY_MM)) * 10) / 10
   return { pdf: await printPdf(cv, footerGapMm), footerGapMm, freeMm }
 }
 
 export const layoutOptions = (cv, { footerGapMm, freeMm }) => ({
   maxPages: cv.meta?.maxPages ?? config.layout.maxPages,
   lastPageFreeMm: freeMm,
-  footerGapMm
+  footerGapMm,
+  design: cv.meta?.design
 })
 
 export const buildPdf = async (cv, outPath) => {

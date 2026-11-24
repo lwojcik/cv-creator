@@ -69,6 +69,7 @@
 <div class="bar">
   <strong>CV Creator</strong>
   <select id="cv-select" aria-label="CV version"></select>
+  <select id="design-select" aria-label="Design"></select>
   <button id="new">Duplicate as…</button>
   <button id="save" class="primary">Save</button>
   <input id="filename" aria-label="PDF file name" placeholder="PDF file name" size="26">
@@ -196,6 +197,7 @@
   }
   let htmlSeq = 0
   let htmlReady = false
+  let shownDesign
   const renderHtml = async () => {
     const seq = ++htmlSeq
     let text
@@ -205,6 +207,8 @@
     if (!res.ok) return status((await res.json()).error, true)
     const html = await res.text()
     const frame = $('preview')
+    const design = currentDesign()
+    if (design !== shownDesign) { htmlReady = false; shownDesign = design }
     if (!htmlReady) {
       frame.srcdoc = html
       htmlReady = true
@@ -235,6 +239,30 @@
   $('view-html').onclick = () => setView('html')
   $('view-pdf').onclick = () => setView('pdf')
 
+  const currentDesign = () => { try { return JSON.parse(editor.value).meta?.design ?? '' } catch { return '' } }
+  const syncDesign = () => {
+    const select = $('design-select')
+    const value = currentDesign()
+    if (value && ![...select.options].some((o) => o.value === value)) select.append(new Option(`${value} (unknown)`, value))
+    select.value = value
+  }
+  const loadDesigns = async () => {
+    const designs = await (await api('/api/designs')).json()
+    const select = $('design-select')
+    select.replaceChildren(new Option('Default design', ''), ...designs.map((d) => Object.assign(new Option(d.name, d.name), { title: d.description })))
+    syncDesign()
+  }
+  $('design-select').onchange = (event) => {
+    let cv
+    try { cv = JSON.parse(editor.value) } catch (error) { syncDesign(); return status(`JSON: ${error.message}`, true) }
+    cv.meta = { ...cv.meta }
+    if (event.target.value) cv.meta.design = event.target.value; else delete cv.meta.design
+    if (!Object.keys(cv.meta).length) delete cv.meta
+    editor.value = JSON.stringify(cv, null, 2)
+    syncForm()
+    editor.dispatchEvent(new Event('input'))
+  }
+
   const loadList = async () => {
     const names = await (await api('/api/cvs')).json()
     if (!names.includes(name)) name = names[0]
@@ -261,6 +289,7 @@
     history.replaceState(null, '', `?cv=${name}`)
     try { localStorage.setItem('last-cv', name) } catch {}
     loadFilename()
+    syncDesign()
     refreshPreview()
     status('Loaded')
   }
@@ -268,6 +297,7 @@
   const livePreview = async () => {
     try { JSON.parse(editor.value) } catch (error) { return status(`JSON: ${error.message}`, true) }
     dirty = true
+    syncDesign()
     status('Unsaved changes')
     refreshPreview()
   }
@@ -524,7 +554,7 @@
   $('mode-form').onclick = () => setMode('form')
   $('mode-json').onclick = () => setMode('json')
 
-  api('/api/config').then((res) => res.json()).then((loaded) => { appConfig = loaded; name ||= loaded.defaultCv }).then(loadList).then(load).catch((e) => status(e.message, true))
+  api('/api/config').then((res) => res.json()).then((loaded) => { appConfig = loaded; name ||= loaded.defaultCv }).then(loadList).then(loadDesigns).then(load).catch((e) => status(e.message, true))
 </script>
 </body>
 </html>

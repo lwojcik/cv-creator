@@ -1,0 +1,6 @@
+{
+  "description": "Teal accent, accent bar beside section titles, airy spacing.",
+  "variant": "modern",
+  "colors": { "accent": "#0f766e", "rule": "#99d5cf", "text": "#1f2933", "paper": "#ffffff" },
+  "spacing": { "sectionGap": "6.5mm", "ruleThickness": "0.6px" }
+}

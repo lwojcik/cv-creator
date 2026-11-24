@@ -5,6 +5,7 @@ import { access } from 'node:fs/promises'
 import { z } from 'zod'
 
 import { checkLayout } from './check.js'
+import { describeDesigns } from './design.js'
 import { config } from './config.js'
 import { buildPdf, closeBrowser, layoutOptions, renderPdf } from './pdf.js'
 import { cvPath, defaultCvName, getSchema, listCvs, pdfPath, readCv, validate, writeCv } from './store.js'
@@ -85,6 +86,16 @@ server.registerTool(
     await writeCv(cvName, cv)
     return json({ saved: cvName, file: cvPath(cvName) })
   })
+)
+
+server.registerTool(
+  'list_designs',
+  {
+    title: 'List designs',
+    description: 'List the available design presets. Select one for a CV by setting meta.design to its name; without it design.config.json applies.',
+    annotations: { readOnlyHint: true }
+  },
+  tool(async () => json(describeDesigns()))
 )
 
 server.registerTool(

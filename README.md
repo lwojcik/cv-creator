@@ -37,7 +37,8 @@ npm run validate   # check every data/*.json against schema/cv.schema.json
 | `src/pdf.js` | HTML -> PDF with headless Chrome (Puppeteer) |
 | `src/server.js`, `src/editor.html` | Live preview, editor and HTTP API |
 | `cv.config.json` | Your project settings (git-ignored); start from `cv.config.example.json` |
-| `design.config.json` | Look of the CV: colours, fonts, page margins, spacing (see Design) |
+| `designs/*.json` | Selectable design presets (`meta.design`) |
+| `design.config.json` | Default look of the CV: colours, fonts, page margins, spacing (see Design) |
 | `dist/` | Generated PDFs (git-ignored) |
 
 ## Configuration
@@ -62,7 +63,18 @@ Restart `npm run dev` after changing the config.
 
 ## Design
 
-`design.config.json` controls the look. The defaults reproduce the original CV, and every key is optional.
+Pick a look per CV with `meta.design`, one of the presets in `designs/` (`classic`, `modern`, `minimal`, `serif`,
+`bold`, `sidebar`; `GET /api/designs` and the MCP tool `list_designs` list them with descriptions). Without `meta.design`,
+`design.config.json` applies. To add a preset, drop a `designs/<name>.json` using the same keys as below; an optional
+`"variant"` key adds the CSS class `variant-<variant>` to the page, which `src/styles.css` can use for structural
+changes (header alignment, section title style).
+
+`sidebar` is a two-column design, enabled by `"layout": { "type": "two-column", "sidebarWidth", "sidebarColor",
+"sidebarText" }` in a preset. Contact lines (split at ` | `) and `skills` sections go in the sidebar, everything
+else in the main column. Set `"column": "side"` or `"main"` on a section to override. The sidebar colour runs to
+the page edges, so the preset's page margins are applied as padding instead of real page margins. A preset replaces `design.config.json` rather than layering on it.
+
+`design.config.json` controls the default look. The defaults reproduce the original CV, and every key is optional.
 
 | Group | Keys |
 | --- | --- |

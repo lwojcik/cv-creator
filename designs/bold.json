@@ -1,0 +1,6 @@
+{
+  "description": "Strong: section titles as filled accent bands with white text.",
+  "variant": "bold",
+  "colors": { "accent": "#1f3a5f", "rule": "#1f3a5f", "text": "#1a1a1a", "paper": "#ffffff" },
+  "spacing": { "sectionTitleGap": "3.5mm" }
+}

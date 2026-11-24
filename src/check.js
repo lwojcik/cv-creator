@@ -19,8 +19,8 @@ const readLines = async (page) => {
   return [...rows.entries()].sort(([a], [b]) => b - a).map(([y, text]) => ({ y, text }))
 }
 
-export const analyzePdf = async (pdf) => {
-  const { heightMm: PAGE_HEIGHT_MM, bottomMm: BOTTOM_MARGIN_MM, topMm: TOP_MARGIN_MM } = pageGeometry(loadDesign())
+export const analyzePdf = async (pdf, design) => {
+  const { heightMm: PAGE_HEIGHT_MM, bottomMm: BOTTOM_MARGIN_MM, topMm: TOP_MARGIN_MM } = pageGeometry(loadDesign(design))
   const task = getDocument({ data: new Uint8Array(pdf), useSystemFonts: true, verbosity: 0 })
   const doc = await task.promise
   const pages = []
@@ -40,8 +40,8 @@ export const analyzePdf = async (pdf) => {
   return pages
 }
 
-export const checkLayout = async (pdf, { maxPages = 2, lastPageFreeMm, footerGapMm } = {}) => {
-  const pages = await analyzePdf(pdf)
+export const checkLayout = async (pdf, { maxPages = 2, lastPageFreeMm, footerGapMm, design } = {}) => {
+  const pages = await analyzePdf(pdf, design)
   if (lastPageFreeMm !== undefined) pages.at(-1).blankAtBottomMm = round(lastPageFreeMm)
   const warnings = []
   if (pages.length > maxPages) {

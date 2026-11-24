@@ -23,6 +23,11 @@
           "minimum": 1,
           "description": "Layout check fails when the PDF has more pages. Default comes from cv.config.json (2)."
         },
+        "design": {
+          "type": "string",
+          "pattern": "^[\\w-]+$",
+          "description": "Name of a design preset from designs/ (see list_designs). Omit to use design.config.json."
+        },
         "fileName": {
           "type": "string",
           "pattern": "^[\\w.-]+$",
@@ -89,6 +94,10 @@
         "pageBreakBefore": {
           "type": "boolean"
         },
+        "column": {
+          "enum": ["main", "side"],
+          "description": "Two-column designs only: which column the section goes in. Default: skills sections go in the sidebar, everything else in the main column."
+        },
         "type": {
           "const": "text"
         },
@@ -115,6 +124,10 @@
         },
         "pageBreakBefore": {
           "type": "boolean"
+        },
+        "column": {
+          "enum": ["main", "side"],
+          "description": "Two-column designs only: which column the section goes in. Default: skills sections go in the sidebar, everything else in the main column."
         },
         "type": {
           "const": "skills"
@@ -155,6 +168,10 @@
         },
         "pageBreakBefore": {
           "type": "boolean"
+        },
+        "column": {
+          "enum": ["main", "side"],
+          "description": "Two-column designs only: which column the section goes in. Default: skills sections go in the sidebar, everything else in the main column."
         },
         "type": {
           "const": "entries"

@@ -92,8 +92,30 @@ const fontFaces = ({ inline }) => {
     .join('\n')
 }
 
+const renderHeader = (header, { contact = true } = {}) => `<header>
+  <h1>${escapeHtml(header.name)}</h1>
+  ${header.headline ? `<p class="headline">${escapeHtml(header.headline)}</p>` : ''}
+  ${contact ? filled(header.lines).map((line) => `<p class="contact">${linkify(line)}</p>`).join('') : ''}
+</header>`
+
+const inSidebar = (section) => (section.column ?? (section.type === 'skills' ? 'side' : 'main')) === 'side'
+
+// Contact lines are usually "a | b | c"; the narrow sidebar reads better with one item per line.
+const contactItems = (header) => filled(header.lines).flatMap((line) => line.split(/\s+\|\s+/))
+
+const twoColumnBody = ({ header, sections, footer }) => `<aside>
+  <div class="contact-block">${contactItems(header).map((item) => `<p class="contact">${linkify(item)}</p>`).join('')}</div>
+  ${sections.filter(inSidebar).map(renderSection).join('\n')}
+</aside>
+<main>
+  ${renderHeader(header, { contact: false })}
+  ${sections.filter((section) => !inSidebar(section)).map(renderSection).join('\n')}
+  ${footer ? `<footer>${escapeHtml(footer)}</footer>` : ''}
+</main>`
+
 export const renderHtml = (cv, { inlineFonts = true, extraHead = '', footerGapMm } = {}) => {
   const { header, sections, footer, meta = {} } = cv
+  const design = loadDesign(meta.design)
   const css = readFileSync(join(root, 'src/styles.css'), 'utf8')
   return `<!doctype html>
 <html lang="${escapeHtml(meta.lang ?? 'en')}">
@@ -101,18 +123,14 @@ export const renderHtml = (cv, { inlineFonts = true, extraHead = '', footerGapMm
 <meta charset="utf-8">
 <title>${escapeHtml(meta.title ?? header.name)}</title>
 <style>${fontFaces({ inline: inlineFonts })}
-${designStyles(loadDesign())}
+${designStyles(design)}
 ${css}${footerGapMm === undefined ? '' : `:root{--footer-gap:${footerGapMm}mm}`}</style>
 ${extraHead}
 </head>
-<body>
-<header>
-  <h1>${escapeHtml(header.name)}</h1>
-  ${header.headline ? `<p class="headline">${escapeHtml(header.headline)}</p>` : ''}
-  ${filled(header.lines).map((line) => `<p class="contact">${linkify(line)}</p>`).join('')}
-</header>
+<body class="${[design.variant && `variant-${design.variant}`, design.layout && 'two-column'].filter(Boolean).join(' ')}">
+${design.layout ? twoColumnBody(cv) : `${renderHeader(header)}
 ${sections.map(renderSection).join('\n')}
-${footer ? `<footer>${escapeHtml(footer)}</footer>` : ''}
+${footer ? `<footer>${escapeHtml(footer)}</footer>` : ''}`}
 </body>
 </html>`
 }

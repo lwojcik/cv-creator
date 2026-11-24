@@ -8,7 +8,7 @@ import { config, outputFileName } from './config.js'
 import { checkLayout } from './check.js'
 import { buildPdf, layoutOptions, renderPdf } from './pdf.js'
 import { renderHtml } from './render.js'
-import { designFile } from './design.js'
+import { describeDesigns, designFile, designsDir } from './design.js'
 import { dataDir, defaultCvName, listCvs, pdfPath, readCv, root, getSchema, validate, writeCv } from './store.js'
 
 const { values } = parseArgs({ options: { port: { type: 'string', default: process.env.PORT ?? String(config.server.port) }, host: { type: 'string', default: config.server.host } } })
@@ -21,6 +21,8 @@ const broadcast = (message) => { for (const client of clients) client.write(`dat
 watch(dataDir, (_, file) => {
   if (file?.endsWith('.json')) broadcast(file.slice(0, -5))
 })
+
+watch(designsDir, () => broadcast('@design'))
 
 watch(dirname(designFile), (_, file) => {
   if (file === basename(designFile)) broadcast('@design')
@@ -55,6 +57,7 @@ const livePreviewHead = (name) =>
 const routes = [
   ['GET', /^\/$/, async (req, res) => send(res, 200, await readFile(join(root, 'src/editor.html'), 'utf8'), 'text/html; charset=utf-8')],
   ['GET', /^\/fonts\/([\w.-]+\.woff2)$/, async (req, res, [file]) => send(res, 200, await readFile(join(fontDir, file)), 'font/woff2')],
+  ['GET', /^\/api\/designs$/, (req, res) => send(res, 200, describeDesigns())],
   ['GET', /^\/events$/, (req, res) => {
     res.writeHead(200, { 'content-type': 'text/event-stream', 'cache-control': 'no-store', connection: 'keep-alive' })
     res.write('retry: 1000\n\n')

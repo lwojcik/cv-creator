@@ -104,3 +104,44 @@ strong { font-weight: 600; }
     border-radius: 3px;
   }
 }
+
+/* Design variants: structural tweaks on top of the CSS variables (designs/<name>.json sets "variant"). */
+body.variant-modern h2 { border-bottom: 0; padding: 0 0 0 3mm; border-left: 1.2mm solid var(--accent); line-height: 1.2; }
+body.variant-modern h1 { text-transform: none; letter-spacing: -0.2px; }
+
+body.variant-minimal h1 { text-transform: none; font-weight: 600; }
+body.variant-minimal .headline { text-transform: none; font-weight: 400; color: var(--text); }
+body.variant-minimal h2 { text-transform: none; font-weight: 600; letter-spacing: 0.3px; }
+
+body.variant-serif header { text-align: center; }
+body.variant-serif h1 { text-transform: none; letter-spacing: 0.5px; }
+body.variant-serif .headline { text-transform: none; font-weight: 400; font-style: italic; }
+body.variant-serif .contact { font-weight: 400; }
+body.variant-serif h2 { text-transform: uppercase; letter-spacing: 1.2px; font-weight: 600; }
+body.variant-serif h3, body.variant-serif strong { font-weight: 700; }
+
+body.variant-bold h2 { color: #fff; background: var(--accent); border-bottom: 0; padding: 1.2mm 2.5mm; letter-spacing: 0.4px; }
+
+/* Two-column layout (designs with "layout": {"type": "two-column"}): sidebar on a page-wide coloured strip. */
+html:has(body.two-column) { background: linear-gradient(to right, var(--sidebar-color) var(--sidebar-width), var(--paper) var(--sidebar-width)) }
+/* The page margins are replaced by cloned body padding so the sidebar colour reaches the page edges. */
+body.two-column { padding: var(--page-first-top) 0 var(--page-bottom); box-decoration-break: clone; -webkit-box-decoration-break: clone; display: grid; grid-template-columns: var(--sidebar-width) 1fr; align-items: start; }
+body.two-column aside { color: var(--sidebar-text); padding: 0 7mm 0 8mm; }
+body.two-column main { padding: 0 12mm 0 9mm; min-width: 0; }
+body.two-column header { margin-bottom: 6mm; }
+body.two-column .contact { font-size: var(--contact-size); margin: 0 0 1.6mm; font-weight: 400; overflow-wrap: anywhere; }
+body.two-column .contact-block { margin: 1.5mm 0 var(--section-gap); }
+body.two-column aside h2 { color: var(--sidebar-text); border-bottom-color: rgb(255 255 255 / 45%); text-transform: uppercase; }
+body.two-column aside ul { padding-left: 0; list-style: none; }
+body.two-column aside li { padding: 0 0 1.6mm; }
+body.two-column aside strong { display: block; font-weight: 600; }
+body.two-column aside a { color: inherit; }
+body.two-column .entry { break-inside: avoid; }
+
+@media screen {
+  html:has(body.two-column) { background: #8a8f98; }
+  body.two-column {
+    padding: var(--page-first-top) 0 var(--page-bottom);
+    background: linear-gradient(to right, var(--sidebar-color) var(--sidebar-width), var(--paper) var(--sidebar-width));
+  }
+}
