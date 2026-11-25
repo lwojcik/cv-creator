@@ -1,6 +1,6 @@
 ---
 name: cv-creator
-description: Create, edit, tailor and render PDF CVs/resumes from JSON files in this repo. Use when the user wants to tailor their CV to a job offer, build or rebuild a CV PDF, change a CV's design, fix its page layout, or add a new CV variant.
+description: Create, edit, tailor and render ATS-friendly PDF CVs/resumes from JSON files. Use when the user wants to tailor their CV to a job offer, build or rebuild a CV PDF, change a CV's design, fix its page layout, or add a new CV variant.
 ---
 
 # CV Creator

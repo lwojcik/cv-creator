@@ -9,11 +9,35 @@ import { renderHtml } from './render.js'
 
 let browserPromise
 
+const isMissingBrowser = (error) => /could not find/i.test(error.message)
+
+// Plugin installs skip Puppeteer's postinstall script, so its own Chrome may be missing: fall back to the installed one.
+const launchBrowser = async () => {
+  const options = { args: ['--no-sandbox'] }
+  try {
+    return await puppeteer.launch(options)
+  } catch (error) {
+    if (!isMissingBrowser(error)) throw error
+  }
+  try {
+    return await puppeteer.launch({ ...options, channel: 'chrome' })
+  } catch (error) {
+    if (!isMissingBrowser(error)) throw error
+    throw new Error('Chrome not found. Install Google Chrome, or set PUPPETEER_EXECUTABLE_PATH to a Chromium-based browser.', { cause: error })
+  }
+}
+
 const getBrowser = () => {
-  browserPromise ??= puppeteer.launch({ args: ['--no-sandbox'] }).then((browser) => {
-    browser.on('disconnected', () => { browserPromise = undefined })
-    return browser
-  })
+  browserPromise ??= launchBrowser().then(
+    (browser) => {
+      browser.on('disconnected', () => { browserPromise = undefined })
+      return browser
+    },
+    (error) => {
+      browserPromise = undefined
+      throw error
+    }
+  )
   return browserPromise
 }
 
