@@ -3,6 +3,8 @@ import { dirname, isAbsolute, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
+// Where the user's own files live (data/, cv.config.json, dist/). Defaults to the repo; the plugin points it outside the plugin cache.
+export const home = process.env.CV_HOME || root
 
 const defaults = {
   defaultCv: 'general',
@@ -13,7 +15,7 @@ const defaults = {
 
 const readUserConfig = () => {
   try {
-    return JSON.parse(readFileSync(join(root, 'cv.config.json'), 'utf8'))
+    return JSON.parse(readFileSync(join(home, 'cv.config.json'), 'utf8'))
   } catch (error) {
     if (error.code === 'ENOENT') return {}
     throw new Error(`Invalid cv.config.json: ${error.message}`)
@@ -31,6 +33,6 @@ export const config = {
 
 const sanitize = (value) => value.replace(/[\\/:*?"<>|]+/g, '-')
 
-export const outputDir = isAbsolute(config.output.dir) ? config.output.dir : join(root, config.output.dir)
+export const outputDir = isAbsolute(config.output.dir) ? config.output.dir : join(home, config.output.dir)
 export const outputFileName = (name, cv) =>
   cv?.meta?.fileName ? `${sanitize(cv.meta.fileName)}.pdf` : `${sanitize(config.output.filenamePrefix)}${name}.pdf`
