@@ -203,6 +203,18 @@ The plugin needs Node.js 20 or newer and a Chrome browser:
   MCP server, tool results (including CV contents) are passed to the assistant you use it with.
 - **Files**: CVs are read and written in the plugin data folder. PDFs go to its `dist/`, or to the folder you set as `output.dir`.
 
+### What the plugin runs, sends and stores
+
+- **Runs**: one local MCP server (`node ${CLAUDE_PLUGIN_ROOT}/src/mcp.js`, stdio) and, only when you build a PDF or check the layout,
+  a headless Chrome child process that renders the CV from local HTML. It has no hooks, no background processes, and it does not
+  change Claude Code's permission settings.
+- **Sends**: nothing. There are no outbound network requests, no telemetry and no credentials or API keys. The only way CV
+  contents leave your machine is as tool results returned to the assistant you are using.
+- **Stores**: your CV JSON files, `cv.config.json` and generated PDFs, in the plugin data folder (`CV_HOME`) or the folder you set as
+  `output.dir`. They stay there until you delete them; uninstalling the plugin does not upload or remove them.
+- **Personal data**: a CV contains personal data (name, contact details, work history). It is processed locally and is never
+  committed (`data/*.json`, `cv.config.json` and `dist/` are git-ignored). The plugin is not directed at people under 18.
+
 Your CVs, `cv.config.json` and generated PDFs live in the plugin data folder (`CV_HOME`), not in the
 plugin cache, so updates do not touch them. The first run seeds `data/sample.json` there. Without `CV_HOME` (cloning the repo
 and running it directly) everything stays in the repo as described above.
