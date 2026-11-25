@@ -13,7 +13,7 @@
     "build": "node src/build.js",
     "build:all": "node src/build.js --all",
     "validate": "node src/validate.js",
-    "prepare": "husky || true",
+    "prepare": "husky || echo 'husky skipped'",
     "mcp": "node src/mcp.js"
   },
   "devDependencies": {
