@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "cv-creator": {
+      "command": "sh",
+      "args": [
+        "-c",
+        "cd \"${CLAUDE_PLUGIN_ROOT}\" && { [ -d node_modules/puppeteer ] || npm install --omit=dev --no-audit --no-fund >&2; } && exec node src/mcp.js"
+      ],
+      "env": { "CV_HOME": "${CLAUDE_PLUGIN_DATA}" }
+    }
+  }
+}

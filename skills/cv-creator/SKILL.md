@@ -6,7 +6,7 @@ description: Create, edit, tailor and render PDF CVs/resumes from JSON files in 
 # CV Creator
 
 CVs are JSON files in `data/` (the single source of truth); a PDF is rendered from them.
-`data/*.json` is personal and git-ignored. Only `data/sample.json` is tracked, so on a fresh checkout copy it to `data/general.json` first.
+`data/*.json` is personal and git-ignored. Only `data/sample.json` is tracked, so on a fresh checkout copy it to `data/general.json` first. When installed as a plugin, CVs live in the plugin data folder (`CV_HOME`) and the sample is seeded on first use.
 
 ## Tools
 
@@ -17,8 +17,7 @@ If they are not available, run from the repo root (`npm install` once):
 - `npm run build -- <name|path.json> [--out file.pdf] [--strict]`
 - `npm run build:all`
 
-If the MCP server is missing, tell the user it can be registered with
-`claude mcp add cv-creator -- node <repo>/src/mcp.js`.
+If the MCP server is missing, tell the user to register `node <repo>/src/mcp.js` (stdio) in their assistant's MCP config; see the README.
 
 ## Tailoring a CV to a job offer
 

@@ -5,12 +5,15 @@
   "license": "MIT",
   "author": "",
   "type": "module",
+  "bin": {
+    "cv-creator-mcp": "src/mcp.js"
+  },
   "scripts": {
     "dev": "node src/server.js",
     "build": "node src/build.js",
     "build:all": "node src/build.js --all",
     "validate": "node src/validate.js",
-    "prepare": "husky",
+    "prepare": "husky || echo 'husky skipped'",
     "mcp": "node src/mcp.js"
   },
   "devDependencies": {

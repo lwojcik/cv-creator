@@ -1,13 +1,13 @@
 import Ajv from 'ajv'
 import { readFileSync, statSync } from 'node:fs'
-import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises'
+import { copyFile, mkdir, readdir, readFile, writeFile } from 'node:fs/promises'
 import { basename, dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import { config, outputDir, outputFileName } from './config.js'
+import { config, home, outputDir, outputFileName } from './config.js'
 
 export const root = join(dirname(fileURLToPath(import.meta.url)), '..')
-export const dataDir = join(root, 'data')
+export const dataDir = join(home, 'data')
 export const distDir = outputDir
 
 const schemaFile = join(root, 'schema/cv.schema.json')
@@ -42,8 +42,19 @@ export const cvPath = (name) => {
 export const pdfPath = (name, cv) =>
   cv?.meta?.fileName ? join(distDir, name, outputFileName(name, cv)) : join(distDir, outputFileName(name, cv))
 
+// With a separate CV_HOME (plugin install) the first run starts from the bundled fictional sample.
+const seedSample = async () => {
+  if (home === root) return
+  await mkdir(dataDir, { recursive: true })
+  await copyFile(join(root, 'data/sample.json'), join(dataDir, 'sample.json'))
+}
+
 export const listCvs = async () => {
-  const files = await readdir(dataDir).catch((error) => (error.code === 'ENOENT' ? [] : Promise.reject(error)))
+  let files = await readdir(dataDir).catch((error) => (error.code === 'ENOENT' ? [] : Promise.reject(error)))
+  if (!files.some((file) => file.endsWith('.json'))) {
+    await seedSample()
+    files = await readdir(dataDir).catch(() => [])
+  }
   return files.filter((file) => file.endsWith('.json')).map((file) => file.slice(0, -5)).sort()
 }
 

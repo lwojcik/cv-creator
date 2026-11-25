@@ -1,0 +1,11 @@
+{
+  "name": "cv-creator",
+  "owner": { "name": "Łukasz Wójcik" },
+  "plugins": [
+    {
+      "name": "cv-creator",
+      "source": "./",
+      "description": "Build and tailor ATS-friendly PDF CVs from JSON."
+    }
+  ]
+}

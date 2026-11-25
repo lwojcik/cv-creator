@@ -149,7 +149,22 @@ Register it, using the absolute path to this repo:
 claude mcp add cv-creator -- node /absolute/path/to/cv-creator/src/mcp.js
 ```
 
-For other clients add the same command (`node /absolute/path/to/cv-creator/src/mcp.js`) to their MCP server config.
+The server speaks standard MCP over stdio, so any MCP client works. Add this to its config (Cursor `mcp.json`, Claude Desktop,
+Gemini CLI `settings.json`, and similar; Codex uses the equivalent TOML in `~/.codex/config.toml`):
+
+```json
+{
+  "mcpServers": {
+    "cv-creator": { "command": "node", "args": ["/absolute/path/to/cv-creator/src/mcp.js"] }
+  }
+}
+```
+
+Set `CV_HOME` in the server's `env` to keep your CVs, `cv.config.json` and PDFs in a folder outside the repo.
+
+Instructions for agents are in [AGENTS.md](AGENTS.md) (read by Codex, Cursor, Copilot, Gemini CLI and others) and in the
+skill at [skills/cv-creator/SKILL.md](skills/cv-creator/SKILL.md), which uses the open Agent Skills format. Tools that support
+skills can load that folder directly; for the rest, AGENTS.md points to it.
 
 | Tool | Description |
 | --- | --- |
@@ -167,6 +182,20 @@ copy of a CV, rebuilding until the layout is clean, and reporting what changed. 
 
 Your CV contains personal data and MCP clients pass tool results to a model, so connect the server only to assistants
 you are comfortable sharing it with. The server only reads and writes inside `data/` and the output folder.
+
+## Claude Code plugin
+
+The repo is also a Claude Code plugin: the `cv-creator` skill plus the MCP server in one install.
+
+```sh
+/plugin marketplace add lwojcik/cv-creator
+/plugin install cv-creator@cv-creator
+```
+
+On first start the MCP server runs `npm install` inside the plugin folder (this downloads Chrome for Puppeteer, so the first
+connection takes a while). Your CVs, `cv.config.json` and generated PDFs live in the plugin data folder (`CV_HOME`), not in the
+plugin cache, so updates do not touch them. The first run seeds `data/sample.json` there. Without `CV_HOME` (cloning the repo
+and running it directly) everything stays in the repo as described above.
 
 ## Contributing
 
