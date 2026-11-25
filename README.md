@@ -35,6 +35,7 @@ npm run validate   # check every data/*.json against schema/cv.schema.json
 | `schema/cv.schema.json` | JSON Schema for CV data |
 | `src/render.js`, `src/styles.css`, `src/design.js` | JSON -> HTML; print styles driven by `design.config.json` |
 | `src/pdf.js` | HTML -> PDF with headless Chrome (Puppeteer) |
+| `fonts/` | DM Sans with Latin and Latin Extended merged into one file per weight, so PDF parsers do not split words like `Łukasz`; rebuilt with `scripts/merge-fonts.py` |
 | `src/server.js`, `src/editor.html` | Live preview, editor and HTTP API |
 | `cv.config.json` | Your project settings (git-ignored); start from `cv.config.example.json` |
 | `designs/*.json` | Selectable design presets (`meta.design`) |
