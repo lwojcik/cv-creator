@@ -13,7 +13,7 @@ import { dataDir, defaultCvName, listCvs, pdfPath, readCv, root, getSchema, vali
 
 const { values } = parseArgs({ options: { port: { type: 'string', default: process.env.PORT ?? String(config.server.port) }, host: { type: 'string', default: config.server.host } } })
 
-const fontDir = join(root, 'node_modules/@fontsource/dm-sans/files')
+const fontDir = join(root, 'fonts')
 const clients = new Set()
 
 const broadcast = (message) => { for (const client of clients) client.write(`data: ${message}\n\n`) }

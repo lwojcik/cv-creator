@@ -1,6 +1,6 @@
 {
   "name": "cv-creator",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Build and tailor ATS-friendly PDF CVs from JSON: a skill plus an MCP server that validates, renders and layout-checks the PDF.",
   "license": "MIT",
   "keywords": ["cv", "resume", "pdf", "mcp"]

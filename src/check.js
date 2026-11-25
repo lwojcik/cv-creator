@@ -6,6 +6,9 @@ const PT_TO_MM = 25.4 / 72
 const MAX_BLANK_MM = 35
 const MIN_LAST_PAGE_MM = 40
 
+// Gap between two text items, as a share of the font size, from which they count as separate words.
+const WORD_GAP = 0.15
+
 const round = (value) => Math.round(value * 10) / 10
 
 const readLines = async (page) => {
@@ -13,10 +16,13 @@ const readLines = async (page) => {
   const rows = new Map()
   for (const item of items) {
     if (!item.str.trim()) continue
+    const x = item.transform[4]
     const y = Math.round(item.transform[5])
-    rows.set(y, `${rows.get(y) ?? ''}${rows.has(y) ? ' ' : ''}${item.str}`.replace(/\s+/g, ' '))
+    const row = rows.get(y)
+    const separator = row && Math.abs(x - row.end) > WORD_GAP * item.height ? ' ' : ''
+    rows.set(y, { text: `${row?.text ?? ''}${separator}${item.str}`.replace(/\s+/g, ' '), end: x + item.width })
   }
-  return [...rows.entries()].sort(([a], [b]) => b - a).map(([y, text]) => ({ y, text }))
+  return [...rows.entries()].sort(([a], [b]) => b - a).map(([y, { text }]) => ({ y, text }))
 }
 
 export const analyzePdf = async (pdf, design) => {

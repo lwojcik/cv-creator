@@ -29,7 +29,7 @@ const exists = (file) => access(file).then(() => true, () => false)
 const layoutReport = async (cv, result) => checkLayout(result.pdf, layoutOptions(cv, result))
 
 const server = new McpServer(
-  { name: 'cv-creator', version: '1.0.0' },
+  { name: 'cv-creator', version: '1.0.1' },
   {
     instructions: [
       'Builds PDF CVs from JSON files stored in data/.',

@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url'
 import { designStyles, loadDesign } from './design.js'
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
-const fontDir = join(root, 'node_modules/@fontsource/dm-sans/files')
+const fontDir = join(root, 'fonts')
 
 const escapeHtml = (value) =>
   String(value)
@@ -67,11 +67,9 @@ const renderSection = (section) => `<section${section.pageBreakBefore ? ' class=
   ${renderBody(section)}
 </section>`
 
+// One file per face, with no unicode-range subsets: Chrome embeds each subset as its own font, and PDF parsers may
+// then split a word like "Łukasz" at the font change. The files come from scripts/merge-fonts.py.
 const fontFaces = ({ inline }) => {
-  const subsets = [
-    ['latin', 'U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD'],
-    ['latin-ext', 'U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF']
-  ]
   const faces = [
     [300, 'normal'],
     [400, 'normal'],
@@ -79,16 +77,14 @@ const fontFaces = ({ inline }) => {
     [600, 'normal'],
     [700, 'normal']
   ]
-  return subsets
-    .flatMap(([subset, range]) =>
-      faces.map(([weight, style]) => {
-        const file = `dm-sans-${subset}-${weight}-${style}.woff2`
-        const src = inline
-          ? `data:font/woff2;base64,${readFileSync(join(fontDir, file)).toString('base64')}`
-          : `/fonts/${file}`
-        return `@font-face{font-family:'DM Sans';font-style:${style};font-weight:${weight};src:url(${src}) format('woff2');unicode-range:${range}}`
-      })
-    )
+  return faces
+    .map(([weight, style]) => {
+      const file = `dm-sans-${weight}-${style}.woff2`
+      const src = inline
+        ? `data:font/woff2;base64,${readFileSync(join(fontDir, file)).toString('base64')}`
+        : `/fonts/${file}`
+      return `@font-face{font-family:'DM Sans';font-style:${style};font-weight:${weight};src:url(${src}) format('woff2')}`
+    })
     .join('\n')
 }
 
