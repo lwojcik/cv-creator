@@ -193,8 +193,17 @@ The repo is also a Claude Code plugin: the `cv-creator` skill plus the MCP serve
 /plugin install cv-creator@cv-creator
 ```
 
-On first start the MCP server runs `npm install` inside the plugin folder (this downloads Chrome for Puppeteer, so the first
-connection takes a while). Your CVs, `cv.config.json` and generated PDFs live in the plugin data folder (`CV_HOME`), not in the
+The plugin needs Node.js 20 or newer and a Chrome browser:
+
+- **Dependencies**: Claude Code installs the npm packages pinned in `package-lock.json` when it installs the plugin, without
+  running their install scripts. The plugin itself downloads nothing.
+- **Chrome**: PDFs are rendered in headless Chrome. The server uses Puppeteer's own Chrome when it is already on the machine,
+  otherwise the installed Google Chrome. For another Chromium-based browser, set `PUPPETEER_EXECUTABLE_PATH` to its path.
+- **Network**: the MCP server sends nothing over the network and collects no telemetry. Fonts are bundled. As with any
+  MCP server, tool results (including CV contents) are passed to the assistant you use it with.
+- **Files**: CVs are read and written in the plugin data folder. PDFs go to its `dist/`, or to the folder you set as `output.dir`.
+
+Your CVs, `cv.config.json` and generated PDFs live in the plugin data folder (`CV_HOME`), not in the
 plugin cache, so updates do not touch them. The first run seeds `data/sample.json` there. Without `CV_HOME` (cloning the repo
 and running it directly) everything stays in the repo as described above.
 

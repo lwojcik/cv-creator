@@ -1,7 +1,32 @@
 {
   "name": "cv-creator",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Build and tailor ATS-friendly PDF CVs from JSON: a skill plus an MCP server that validates, renders and layout-checks the PDF.",
+  "author": {
+    "name": "Łukasz Wójcik",
+    "url": "https://github.com/lwojcik"
+  },
+  "homepage": "https://github.com/lwojcik/cv-creator#readme",
+  "repository": "https://github.com/lwojcik/cv-creator",
   "license": "MIT",
-  "keywords": ["cv", "resume", "pdf", "mcp"]
+  "keywords": [
+    "cv",
+    "resume",
+    "ats",
+    "pdf",
+    "job-search",
+    "mcp"
+  ],
+  "icon": "./.claude-plugin/icon.png",
+  "mcpServers": {
+    "cv-creator": {
+      "command": "node",
+      "args": [
+        "${CLAUDE_PLUGIN_ROOT}/src/mcp.js"
+      ],
+      "env": {
+        "CV_HOME": "${CLAUDE_PLUGIN_DATA}"
+      }
+    }
+  }
 }

@@ -1,9 +1,9 @@
 {
   "name": "cv-creator",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Build a PDF CV from JSON data, with live preview and an API",
   "license": "MIT",
-  "author": "",
+  "author": "Łukasz Wójcik",
   "type": "module",
   "bin": {
     "cv-creator-mcp": "src/mcp.js"
